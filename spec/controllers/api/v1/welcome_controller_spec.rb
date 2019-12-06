@@ -7,6 +7,7 @@ RSpec.describe Api::V1::WelcomeController, type: :controller do
       get :home
 
       expect(response).to have_http_status(:success)
+      expect(response.body).to match('Welcome to Alpha Blog api!')
     end
   end
 
@@ -15,6 +16,7 @@ RSpec.describe Api::V1::WelcomeController, type: :controller do
       get :about
 
       expect(response).to have_http_status(:success)
+      expect(response.body).to match('This is a simple api for training.')
     end
   end
 end
