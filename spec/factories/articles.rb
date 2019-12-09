@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :article do
-    title { 'New article' }
-    description { 'New description' }
+    title { FFaker::CheesyLingo.title }
+    description { FFaker::Book.description }
     user
   end
 end
