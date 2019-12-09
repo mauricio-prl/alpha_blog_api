@@ -7,4 +7,6 @@ class User < ApplicationRecord
     length: { minimum: 3, maximum: 25 }
   validates :email, presence: true, uniqueness: true, length: { maximum: 100 },
     format: { with: VALID_EMAIL_REGEX }
+
+  has_many :articles
 end

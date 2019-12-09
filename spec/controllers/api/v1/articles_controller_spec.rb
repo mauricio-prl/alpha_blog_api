@@ -11,8 +11,16 @@ RSpec.describe Api::V1::ArticlesController, type: :controller do
 
   describe 'POST #create' do
     context 'when valid attributes' do
+      let!(:user) { create(:user) }
+      
       it 'returns http status created' do
-        post :create, params: { article: attributes_for(:article) }
+        post :create, params: { 
+          article: {
+            title: 'New article',
+            description: 'New description',
+            user_id: user.id
+          } 
+        }
 
         expect(response).to have_http_status(:created)
       end

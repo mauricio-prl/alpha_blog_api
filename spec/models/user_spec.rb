@@ -10,4 +10,8 @@ RSpec.describe User, type: :model do
     it { is_expected.to validate_length_of(:email).is_at_most(100) }
     it { is_expected.not_to allow_value('invalid_email@%&#exemple.com').for(:email) }
   end
+
+  describe 'associations' do
+    it { is_expected.to have_many(:articles) }
+  end
 end
