@@ -36,11 +36,11 @@ class Api::V1::ArticlesController < ApplicationController
 
   private
 
-  def set_article
-    @article = Article.find(params[:id])
+  def article_params
+    params.require(:article).permit(:title, :description, :user_id)
   end
 
-  def article_params
-    params.require(:article).permit(:title, :description)
+  def set_article
+    @article = Article.find(params[:id])
   end
 end
