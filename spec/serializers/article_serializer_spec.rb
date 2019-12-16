@@ -9,15 +9,10 @@ RSpec.describe ArticleSerializer do
   subject { JSON.parse(serialization.to_json) }
 
   it 'returns a serialized hash' do
-    serialized_article = {
-      "id" => article.id,
-      "title" => article.title,
-      "description" => article.description, 
-      "user" => {
-        "email" => user.email, "id" => user.id, "username" => user.username
-      }
-    }
-
-    is_expected.to eq(serialized_article)
+    is_expected.to include('id')
+    is_expected.to include('title')
+    is_expected.to include('user')
+    is_expected.to include('created_at')
+    is_expected.to include('updated_at')
   end
 end
