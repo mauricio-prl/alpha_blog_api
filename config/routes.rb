@@ -4,8 +4,11 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :articles
-      resources :users
-      get '/about', to: 'welcome#about'
+      resources :users, except: [:create]
+      get 'about', to: 'welcome#about'
+      post 'signup', to: 'users#create'
+      post 'login', to: 'sessions#create'
+      delete 'logout', to: 'sessions#destroy'
     end
   end
 end
