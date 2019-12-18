@@ -10,15 +10,17 @@ RSpec.describe Api::V1::ArticlesController, type: :controller do
   end
 
   describe 'POST #create' do
-    context 'when valid attributes' do
-      let!(:user) { create(:user) }
-      
+    let!(:user) { create(:user) }
+
+    context 'when valid attributes' do  
       it 'returns http status created' do
         post :create, params: { 
+          session: {
+            username: user.username, password: user.password
+          },
           article: {
             title: 'New article',
-            description: 'New description',
-            user_id: user.id
+            description: 'New description'
           } 
         }
 
@@ -26,11 +28,32 @@ RSpec.describe Api::V1::ArticlesController, type: :controller do
       end
     end
 
+    context 'when invalid session' do
+      it 'returns unauthorized' do
+        post :create, params: { 
+          session: {
+            username: user.username, password: nil
+          },
+          article: {
+            title: 'New article',
+            description: 'New description'
+          } 
+        }
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
     context 'when invalid attributes' do
       let(:article_params) { attributes_for(:article, title: nil) }
 
       it 'returns http status unprocessable_entity' do
-        post :create, params: { article: article_params }
+        post :create, params: { 
+          session: {
+            username: user.username, password: user.password
+          },
+          article: article_params 
+        }
 
         expect(response).to have_http_status(:unprocessable_entity)
       end
@@ -48,35 +71,113 @@ RSpec.describe Api::V1::ArticlesController, type: :controller do
   end
 
   describe 'PUT #update' do
-    context 'when valid attributes' do
-      let!(:article) { create(:article) }
+    let!(:user) { create(:user) }
+    let!(:article) { create(:article, user: user) }
 
-      it 'updates the article' do
-        put :update, params: { id: article.id, article: attributes_for(:article) }
+    context 'when valid attributes' do
+      it 'returns http ok' do
+        put :update, params: { 
+          session: {
+            username: user.username, password: user.password
+          },
+          id: article.id, article: attributes_for(:article) }
 
         expect(response).to have_http_status(:ok)  
       end
     end
 
+    context 'when invalid session' do
+      it 'returns http unauthorized' do
+        put :update, params: { 
+          session: {
+            username: user.username, password: nil
+          },
+          id: article.id, article: attributes_for(:article) }
+
+        expect(response).to have_http_status(:unauthorized)
+        expect(response.body).to match('There was something wrong, bad username or password.')
+      end
+    end
+
     context 'when invalid attributes' do
-      let!(:article) { create(:article) }
       let!(:invalid_article_params) { attributes_for(:article, title: nil) }
 
-      it 'does not update the article' do
-        put :update, params: { id: article.id, article: invalid_article_params }
+      it 'return unprocessable_entity' do
+        put :update, params: { 
+          session: {
+            username: user.username, password: user.password
+          },
+          id: article.id, article: invalid_article_params 
+        }
 
         expect(response).to have_http_status(:unprocessable_entity) 
+        expect(response.body).to match(/can't be blank/) 
       end      
+    end
+
+    context 'when user tries to edit an article from other user' do
+      let!(:other_user) { create(:user) }
+
+      it 'return unauthorized' do
+        put :update, params: { 
+          session: {
+            username: other_user.username, password: other_user.password
+          },
+          id: article.id, article: attributes_for(:article) 
+        }
+
+        expect(response).to have_http_status(:unauthorized)
+        expect(response.body).to match('You can only edit or destroy your own articles')
+      end
     end
   end
 
   describe 'DELETE #destroy' do
-    let!(:article) { create(:article) }
+    let!(:user) { create(:user) }
+    let!(:article) { create(:article, user: user) }
 
-    it 'deletes the article' do
-      delete :destroy, params: { id: article.id }
+    context 'when valid session and id' do
+      it 'returns http status ok' do
+        delete :destroy, params: { 
+          session: { 
+            username: user.username, 
+            password: user.password 
+          },
+          id: article.id 
+        }
 
-      expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context 'when invalid session' do
+      it 'returns http status ok' do
+        delete :destroy, params: { 
+          session: { 
+            username: user.username, 
+            password: nil 
+          },
+          id: article.id 
+        }
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context 'when user tries to delete an article from other user' do
+      let!(:other_user) { create(:user) }
+
+      it 'returns http status ok' do
+        delete :destroy, params: { 
+          session: { 
+            username: other_user.username, 
+            password: other_user.password
+          },
+          id: article.id 
+        }
+
+        expect(response).to have_http_status(:unauthorized)
+      end
     end
   end
 end
