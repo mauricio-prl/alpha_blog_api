@@ -3,7 +3,7 @@
 class Api::V1::UsersController < ApplicationController
   before_action :set_user, only: %i[show update destroy]
   before_action :authenticate_user, only: %i[update destroy]
-  before_action :require_same_user, only: %i[update destroy]
+  before_action :require_same_user_or_admin, only: %i[update destroy]
 
   def index
     render json: User.all
@@ -47,8 +47,8 @@ class Api::V1::UsersController < ApplicationController
     @user = User.find(params[:id])
   end
 
-  def require_same_user
-    if @user != current_user
+  def require_same_user_or_admin
+    if @user != current_user && !current_user.admin?
       render json: 'You can only edit your own account.', status: :unauthorized
     end
   end

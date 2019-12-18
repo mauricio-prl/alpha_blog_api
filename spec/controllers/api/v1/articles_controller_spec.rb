@@ -130,6 +130,21 @@ RSpec.describe Api::V1::ArticlesController, type: :controller do
         expect(response.body).to match('You can only edit or destroy your own articles')
       end
     end
+
+    context 'when user is an admin' do
+      let!(:admin) { create(:user, admin: true) }
+
+      it 'returns http status ok' do
+        put :update, params: { 
+          session: {
+            username: admin.username, password: admin.password
+          },
+          id: article.id, article: attributes_for(:article) 
+        }
+
+        expect(response).to have_http_status(:ok)
+      end
+    end
   end
 
   describe 'DELETE #destroy' do
@@ -178,6 +193,22 @@ RSpec.describe Api::V1::ArticlesController, type: :controller do
 
         expect(response).to have_http_status(:unauthorized)
       end
+    end
+
+    context 'when user is an admin' do
+      let!(:admin) { create(:user, admin: true) }
+
+      it 'returns http status ok' do
+        delete :destroy, params: { 
+          session: { 
+            username: admin.username, 
+            password: admin.password
+          },
+          id: article.id 
+        }
+
+        expect(response).to have_http_status(:ok)
+      end      
     end
   end
 end
