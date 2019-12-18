@@ -3,7 +3,7 @@
 class Api::V1::ArticlesController < ApplicationController
   before_action :set_article, only: %i[show update destroy]
   before_action :authenticate_user, except: %i[index show]
-  before_action :require_owner, only: %i[update destroy]
+  before_action :require_owner_or_admin, only: %i[update destroy]
 
   def index
     render json: Article.order(:id)
@@ -46,8 +46,8 @@ class Api::V1::ArticlesController < ApplicationController
     @article = Article.find(params[:id])
   end
 
-  def require_owner
-    unless @article.user == current_user
+  def require_owner_or_admin
+    if @article.user != current_user && !current_user.admin?
       render json: 'You can only edit or destroy your own articles', status: :unauthorized
     end
   end
