@@ -1,3 +1,4 @@
+
 require 'rails_helper'
 
 RSpec.describe Api::V1::UsersController, type: :controller do
@@ -89,6 +90,19 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
         expect(response).to have_http_status(:unauthorized)
       end
+
+      context 'when user is an admin' do
+        let!(:admin) { create(:user, admin: true) }
+
+        it 'returns http status ok' do
+          put :update, params: {
+            session: { username: admin.username, password: admin.password },
+            id: user.id, user: user_params
+          }
+
+          expect(response).to have_http_status(:ok)
+        end
+      end
     end
   end
 
@@ -117,6 +131,17 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       end
     end
 
-    it 'when not admins try to destroy a user'
+    context 'when user is an admin' do
+      let!(:admin) { create(:user, admin: true) }
+
+      it 'returns http status ok' do
+        delete :destroy, params: { 
+          session: { username: admin.username, password: admin.password },
+          id: user.id 
+        }
+
+        expect(response).to have_http_status(:ok)
+      end
+    end
   end
 end

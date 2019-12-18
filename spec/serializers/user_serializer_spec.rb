@@ -9,7 +9,8 @@ RSpec.describe UserSerializer do
 
   it 'returns a serialized hash' do
     serialized_user = { 
-      "articles"=>user.articles, 
+      "articles"=>user.articles,
+      "admin"=> user.admin?,
       "email"=>user.email, 
       "id"=>user.id, 
       "username"=>user.username 
