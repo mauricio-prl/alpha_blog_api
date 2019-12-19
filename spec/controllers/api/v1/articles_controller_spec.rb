@@ -11,6 +11,7 @@ RSpec.describe Api::V1::ArticlesController, type: :controller do
 
   describe 'POST #create' do
     let!(:user) { create(:user) }
+    let!(:category) { create(:category) }
 
     context 'when valid attributes' do  
       it 'returns http status created' do
@@ -20,11 +21,13 @@ RSpec.describe Api::V1::ArticlesController, type: :controller do
           },
           article: {
             title: 'New article',
-            description: 'New description'
+            description: 'New description',
+            category_ids: [category.id]
           } 
         }
 
         expect(response).to have_http_status(:created)
+        expect(response.body).to match(category.name)
       end
     end
 
