@@ -39,17 +39,17 @@ class Api::V1::UsersController < ApplicationController
 
   private
 
+  def require_same_user_or_admin
+    if @user != current_user && !current_user.admin?
+      render json: 'You can only edit your own account.', status: :unauthorized
+    end
+  end
+
   def user_params
     params.require(:user).permit(:username, :email, :password)
   end
 
   def set_user
     @user = User.find(params[:id])
-  end
-
-  def require_same_user_or_admin
-    if @user != current_user && !current_user.admin?
-      render json: 'You can only edit your own account.', status: :unauthorized
-    end
   end
 end

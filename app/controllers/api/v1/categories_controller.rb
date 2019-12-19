@@ -38,14 +38,14 @@ class Api::V1::CategoriesController < ApplicationController
 
   private
 
-  def category_params
-    params.require(:category).permit(:name)
-  end
-
   def require_admin
     unless current_user.admin?
       render json: 'Only admins can perform that action.', status: :unauthorized
     end
+  end
+  
+  def category_params
+    params.require(:category).permit(:name)
   end
 
   def set_category

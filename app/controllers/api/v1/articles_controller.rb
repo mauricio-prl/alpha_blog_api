@@ -38,17 +38,17 @@ class Api::V1::ArticlesController < ApplicationController
 
   private
 
+  def require_owner_or_admin
+    if @article.user != current_user && !current_user.admin?
+      render json: 'You can only edit or destroy your own articles', status: :unauthorized
+    end
+  end
+  
   def article_params
     params.require(:article).permit(:title, :description, :user_id)
   end
 
   def set_article
     @article = Article.find(params[:id])
-  end
-
-  def require_owner_or_admin
-    if @article.user != current_user && !current_user.admin?
-      render json: 'You can only edit or destroy your own articles', status: :unauthorized
-    end
   end
 end
