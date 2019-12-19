@@ -43,7 +43,7 @@ class Api::V1::CategoriesController < ApplicationController
       render json: 'Only admins can perform that action.', status: :unauthorized
     end
   end
-  
+
   def category_params
     params.require(:category).permit(:name)
   end

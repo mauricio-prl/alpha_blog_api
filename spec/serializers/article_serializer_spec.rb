@@ -14,5 +14,6 @@ RSpec.describe ArticleSerializer do
     is_expected.to include('user')
     is_expected.to include('created_at')
     is_expected.to include('updated_at')
+    is_expected.to include('categories')
   end
 end
