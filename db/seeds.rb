@@ -1,4 +1,5 @@
-User.create(username: 'mauricio-p', email: 'mauricio@email.com', password: '515442')
+User.create(username: 'mauricio-p', email: 'mauricio@email.com', password: 'password')
+User.create(username: 'admin', email: 'admin@email.com', password: 'password', admin: true)
 
 Category.create(name: 'Sports')
 
