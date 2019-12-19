@@ -43,7 +43,7 @@ class Api::V1::ArticlesController < ApplicationController
       render json: 'You can only edit or destroy your own articles', status: :unauthorized
     end
   end
-  
+
   def article_params
     params.require(:article).permit(:title, :description, :user_id)
   end
