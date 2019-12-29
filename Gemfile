@@ -14,6 +14,7 @@ gem 'rails', '~> 5.2.3'
 
 group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
+  gem 'coveralls', require: false
   gem 'factory_bot_rails'
   gem 'ffaker'
   gem 'pry', '~> 0.12.2'
