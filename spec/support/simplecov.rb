@@ -1,2 +1,7 @@
 require 'simplecov'
-SimpleCov.start
+require 'coveralls'
+
+SimpleCov.formatter = Coveralls::SimpleCov::Formatter
+SimpleCov.start do
+  add_filter 'app/secrets'
+end
