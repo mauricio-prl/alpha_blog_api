@@ -47,6 +47,24 @@ RSpec.describe Api::V1::CategoriesController, type: :controller do
       end
     end
 
+    context 'when invalid attributes' do
+      let!(:admin) { create(:user, admin: true) }
+
+      it 'returnsh http status unprocessable_entity' do
+        post :create, params: { 
+          session: {
+            username: admin.username,
+            password: admin.password
+          },
+          category: {
+            name: nil
+          }
+        }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+
     context 'when user is an admin and session is valid' do
       let!(:admin) { create(:user, admin: true) }
 
@@ -112,6 +130,23 @@ RSpec.describe Api::V1::CategoriesController, type: :controller do
 
         expect(response).to have_http_status(:unauthorized)
         expect(response.body).to match('Only admins can perform that action.')
+      end
+    end
+
+    context 'when invalid attributes' do
+      let!(:admin) { create(:user, admin: true) }
+
+      it 'returns http status unprocessable_entity' do
+        put :update, params: { 
+          session: {
+            username: admin.username,
+            password: admin.password
+          },
+          id: category.id,
+          category: { name: nil } 
+        }
+
+        expect(response).to have_http_status(:unprocessable_entity)
       end
     end
 
