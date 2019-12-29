@@ -4,4 +4,8 @@
 
 # Alpha_blog_api
 
-A simple mvc training.
+This is a simple application where you can create an account, and make articles.
+
+### todo: 
+
+* create instructions
