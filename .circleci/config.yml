@@ -11,6 +11,7 @@ jobs:
         environment:
           RACK_ENV: test
           RAILS_ENV: test
+          CI: simplecov
           
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images

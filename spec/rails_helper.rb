@@ -1,3 +1,17 @@
+require 'simplecov'
+
+if ENV['CI']
+  require 'coveralls'
+
+  SimpleCov.formatter = Coveralls::SimpleCov::Formatter
+  SimpleCov.start do
+    add_filter 'app/secrets'
+  end
+else
+  require 'simplecov'
+  SimpleCov.start
+end
+
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
 
